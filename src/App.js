@@ -77,13 +77,20 @@ export default function App() {
 
   return (
     <div>
+      <h1 className="headline">MEMORY CARDS</h1>
       <div className="board-container">
         {newGame ? (
           <GameBoard cards={cards} won={hasWon} click={countClicks} />
         ) : null}
-        {newGame && <p className="message center">Total flips: {clicks}</p>}
+        {newGame && (
+          <>
+            <p className="message center">Total flips: {clicks}</p>
+            <button className="btn" onClick={resetGame}>
+              RESTART
+            </button>
+          </>
+        )}
       </div>
-
       {won && (
         <div className="modal">
           <div className="won">
