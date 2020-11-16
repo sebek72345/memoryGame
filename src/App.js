@@ -1,74 +1,111 @@
-import "./App.css";
-import NewGame from "./components/NewGame";
+import React, { Component } from "react";
 import GameBoard from "./components/GameBoard";
-import { useState } from "react";
+import NewGame from "./components/NewGame";
 
-const gererateRandomString = () => {
+class App extends Component {
+  static initState = () => {
+    return {
+      newGame: false,
+      won: false,
+      cards: [],
+      clicks: 0,
+    };
+  };
+
+  state = App.initState();
+
+  countClicks = () => {
+    this.setState((prevState) => ({
+      clicks: prevState.clicks + 1,
+    }));
+  };
+
+  generateDeck = () => {
+    let amount = 10;
+    let cards = [];
+    for (let i = 1; i < amount + 1; i++) {
+      let id = createId();
+      let id2 = createId();
+      let rand = Math.floor(Math.random() * 300) + 1;
+      const card1 = {
+        id: id,
+        matchesId: id2,
+        url: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${rand}.png`,
+        flipped: false,
+        found: false,
+      };
+      const card2 = {
+        id: id2,
+        matchesId: id,
+        url: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${rand}.png`,
+        flipped: false,
+        found: false,
+      };
+      cards.push(card1);
+      cards.push(card2);
+    }
+    this.shuffleCards(cards);
+    this.setState({
+      cards: cards,
+    });
+  };
+
+  shuffleCards = (a) => {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
+
+  resetGame = () => {
+    this.setState(App.initState(), () => {
+      this.initGame();
+    });
+  };
+
+  hasWon = () => {
+    this.setState({
+      won: true,
+    });
+  };
+
+  initGame = () => {
+    this.generateDeck();
+    this.setState({
+      newGame: true,
+    });
+  };
+
+  render() {
+    const { cards, newGame, won, clicks } = this.state;
+    return (
+      <div>
+        <div className="board-container">
+          {newGame ? (
+            <GameBoard
+              cards={cards}
+              won={this.hasWon}
+              click={this.countClicks}
+            />
+          ) : null}
+          {newGame && <p className="message center">Total flips: {clicks}</p>}
+        </div>
+
+        <div className="menu">
+          <div className="message">{won && <h2>You win!</h2>}</div>
+          <NewGame play={this.initGame} />
+        </div>
+      </div>
+    );
+  }
+}
+
+export default App;
+
+const createId = () => {
   return (
     Math.random().toString(36).substring(2, 15) +
     Math.random().toString(36).substring(2, 15)
   );
 };
-
-function App() {
-  const [newGame, setNewGame] = useState(true);
-  const [cards, setCards] = useState([]);
-  const [clicks, setClicks] = useState(0);
-
-  const generateBoard = () => {
-    const numberOfPairs = 10;
-    const tempCard = [];
-    for (let i = 0; i < numberOfPairs; i++) {
-      const id1 = gererateRandomString();
-      const id2 = gererateRandomString();
-      const randomPokemon = Math.floor(Math.random() * 300);
-      const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${randomPokemon}.png`;
-      const card1 = {
-        id: id1,
-        matchesId: id2,
-        image,
-        flipped: false,
-        guessed: false,
-      };
-      const card2 = {
-        id: id2,
-        matchesId: id1,
-        image,
-        flipped: false,
-        guessed: false,
-      };
-      tempCard.push(card1);
-      tempCard.push(card2);
-      const shuffleCard = shuffleCards(tempCard);
-
-      setCards(shuffleCard);
-    }
-  };
-  const shuffleCards = (cardsToShuffle) => {
-    for (let i = cardsToShuffle.length - 1; i > 0; i--) {
-      let j = Math.floor(Math.random() * i);
-      let temp = cardsToShuffle[i];
-      cardsToShuffle[i] = cardsToShuffle[j];
-      cardsToShuffle[j] = temp;
-    }
-    return cardsToShuffle;
-  };
-  const initGame = () => {
-    setNewGame(true);
-    generateBoard();
-  };
-
-  return (
-    <div>
-      <div className="board-container">
-        <button onClick={initGame}>stars</button>
-        {newGame ? <GameBoard cards={cards} handleClick={clicks} /> : null}
-      </div>
-      <div className="menu">
-        <NewGame start={initGame} />
-      </div>
-    </div>
-  );
-}
-
-export default App;

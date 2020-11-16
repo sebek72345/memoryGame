@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-export default function NewGame({ start }) {
-  const [visible, setVisible] = useState(false);
+export default function NewGame({ play }) {
+  const [visible, setVisible] = useState(true);
   return (
     <div className="menu-item">
       <button
@@ -9,7 +9,7 @@ export default function NewGame({ start }) {
         style={{ visibility: visible ? "visible" : "hidden" }}
         onClick={() => {
           setVisible(!visible);
-          start();
+          play();
         }}
       >
         PLAY

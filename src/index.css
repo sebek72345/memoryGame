@@ -6,7 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
-  /* background: #1b1b1b; */
+  background: #1b1b1b;
 }
 .menu-item {
   color: white;

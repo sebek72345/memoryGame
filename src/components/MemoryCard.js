@@ -5,9 +5,10 @@ const cardBack = {
   background: "#3700B3",
 };
 
-export default function MemoryCard({ id, imgUrl, flipped, guessed }) {
+export default function MemoryCard({ id, imgUrl, flipped, guessed, flip }) {
   const flipCard = (e) => {
     if (guessed || flipped) return;
+    flip(e.target.id);
   };
   return (
     <div className="card">
@@ -17,10 +18,12 @@ export default function MemoryCard({ id, imgUrl, flipped, guessed }) {
           className="memoryCard front"
           style={cardBack}
           key="front"
+          onClick={flipCard}
         />
         <div
           className="memoryCard"
           key="back"
+          onClick={flipCard}
           style={{
             backgroundImage: `url(${imgUrl})`,
             backgroundSize: "contain",
