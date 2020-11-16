@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import MemoryCard from "./MemoryCard";
-
 export default function GameBoard({ cards, won, click }) {
-  const [memoryCards, setMemoryCards] = useState(cards);
+  const [memoryCards, setMemoryCards] = useState([]);
   useEffect(() => {
-    setMemoryCards(memoryCards);
-    console.log("one");
-  }, [memoryCards]);
-
+    setMemoryCards(cards);
+  }, [cards]);
   const countFlippedCards = () => {
     return memoryCards.filter(({ flipped, found }) => flipped && !found).length;
   };
@@ -16,7 +13,6 @@ export default function GameBoard({ cards, won, click }) {
     const tempCard = memoryCards.map((card) => {
       if (card.id === id) {
         card.flipped = true;
-        console.log("ss");
       }
       return card;
     });
@@ -71,8 +67,8 @@ export default function GameBoard({ cards, won, click }) {
   };
 
   const hasWon = () => {
-    let won = memoryCards.every((card) => card.found);
-    if (won) {
+    let win = memoryCards.every((card) => card.found);
+    if (win) {
       won();
     }
   };

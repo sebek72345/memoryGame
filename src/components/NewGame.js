@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-
-export default function NewGame({ play }) {
+import moment from "moment";
+export default function NewGame({ play, time }) {
   const [visible, setVisible] = useState(true);
+
   return (
     <div className="menu-item">
       <button
@@ -10,6 +11,8 @@ export default function NewGame({ play }) {
         onClick={() => {
           setVisible(!visible);
           play();
+          let timeStart = moment().format("h:mm:ss");
+          time(timeStart);
         }}
       >
         PLAY

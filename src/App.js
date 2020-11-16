@@ -1,28 +1,23 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import GameBoard from "./components/GameBoard";
 import NewGame from "./components/NewGame";
+import PlayAgain from "./components/PlayAgain";
+import moment from "moment";
+export default function App() {
+  let [newGame, setNewGame] = useState(false);
+  let [won, setWon] = useState(false);
+  let [cards, setCards] = useState([]);
+  let [clicks, setClicks] = useState(0);
+  let [time, setTime] = useState([]);
 
-class App extends Component {
-  static initState = () => {
-    return {
-      newGame: false,
-      won: false,
-      cards: [],
-      clicks: 0,
-    };
+  const countClicks = () => {
+    setClicks(++clicks);
   };
 
-  state = App.initState();
-
-  countClicks = () => {
-    this.setState((prevState) => ({
-      clicks: prevState.clicks + 1,
-    }));
-  };
-
-  generateDeck = () => {
+  const generateDeck = () => {
+    setCards([]);
     let amount = 10;
-    let cards = [];
+    let tempCards = [];
     for (let i = 1; i < amount + 1; i++) {
       let id = createId();
       let id2 = createId();
@@ -41,16 +36,15 @@ class App extends Component {
         flipped: false,
         found: false,
       };
-      cards.push(card1);
-      cards.push(card2);
+
+      tempCards.push(card1);
+      tempCards.push(card2);
     }
-    this.shuffleCards(cards);
-    this.setState({
-      cards: cards,
-    });
+    shuffleCards(tempCards);
+    setCards(tempCards);
   };
 
-  shuffleCards = (a) => {
+  const shuffleCards = (a) => {
     for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
@@ -58,50 +52,53 @@ class App extends Component {
     return a;
   };
 
-  resetGame = () => {
-    this.setState(App.initState(), () => {
-      this.initGame();
-    });
+  const resetGame = () => {
+    setWon(false);
+    setTime([]);
+    setCards([]);
+    setClicks(0);
+    initGame();
   };
 
-  hasWon = () => {
-    this.setState({
-      won: true,
-    });
-  };
-
-  initGame = () => {
-    this.generateDeck();
-    this.setState({
-      newGame: true,
-    });
-  };
-
-  render() {
-    const { cards, newGame, won, clicks } = this.state;
-    return (
-      <div>
-        <div className="board-container">
-          {newGame ? (
-            <GameBoard
-              cards={cards}
-              won={this.hasWon}
-              click={this.countClicks}
-            />
-          ) : null}
-          {newGame && <p className="message center">Total flips: {clicks}</p>}
-        </div>
-
-        <div className="menu">
-          <div className="message">{won && <h2>You win!</h2>}</div>
-          <NewGame play={this.initGame} />
-        </div>
-      </div>
+  const hasWon = () => {
+    setWon(true);
+    const actualTime = moment().format("h:mm:ss");
+    const ms = moment(actualTime, "h:mm:ss").diff(moment(time, "h:mm:ss"));
+    const timeData = moment.duration(ms)._data;
+    setTime(
+      `Your time : ${timeData.hours} h, ${timeData.minutes} m,  ${timeData.seconds} s`
     );
-  }
-}
+  };
 
-export default App;
+  const initGame = () => {
+    generateDeck();
+    setNewGame(true);
+  };
+
+  return (
+    <div>
+      <div className="board-container">
+        {newGame ? (
+          <GameBoard cards={cards} won={hasWon} click={countClicks} />
+        ) : null}
+        {newGame && <p className="message center">Total flips: {clicks}</p>}
+      </div>
+
+      {won && (
+        <div className="modal">
+          <div className="won">
+            <div className="message">{<h2>You win!</h2>}</div>
+            <div className="message">{<h2>{time} </h2>}</div>
+            <PlayAgain again={resetGame} />
+          </div>
+        </div>
+      )}
+      <div className="menu">
+        <NewGame play={initGame} time={setTime} />
+      </div>
+    </div>
+  );
+}
 
 const createId = () => {
   return (
