@@ -66,7 +66,7 @@ export default function App() {
     const ms = moment(actualTime, "h:mm:ss").diff(moment(time, "h:mm:ss"));
     const timeData = moment.duration(ms)._data;
     setTime(
-      `Your time : ${timeData.hours} h, ${timeData.minutes} m,  ${timeData.seconds} s`
+      `Your time : ${timeData.hours}h:${timeData.minutes}m:${timeData.seconds}s`
     );
   };
 
