@@ -26,3 +26,5 @@ steps:
     appType: 'webApp'
     WebAppName: 'cyberworker-frontend'
     packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    
+- task: PublishBuildArtifacts@1
