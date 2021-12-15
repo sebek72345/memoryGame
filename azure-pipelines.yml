@@ -19,6 +19,7 @@ steps:
     npm install
     npm run build
   displayName: 'npm install and build'
+- task: PublishBuildArtifacts@1
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
@@ -27,4 +28,3 @@ steps:
     WebAppName: 'cyberworker-frontend'
     packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
     
-- task: PublishBuildArtifacts@1
