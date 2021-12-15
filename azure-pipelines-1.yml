@@ -20,10 +20,3 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
-- task: AzureRmWebAppDeployment@4
-  inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'Visual Studio Professional Subscription(e2a24f00-c6e5-4954-b1ff-8b99cde95aeb)'
-    appType: 'webApp'
-    WebAppName: 'noclegi'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
